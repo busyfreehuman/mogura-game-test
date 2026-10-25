@@ -1,1 +1,2 @@
 # mogura-game-test
+ああああ
