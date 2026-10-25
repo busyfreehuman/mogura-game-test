@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>モグラ叩き</title>
+<link rel="stylesheet" type="text/css" href="css/mogura.css">
+<script>
+"use strict";
+window.onload = main;
+
+let tiles = [];
+
+let score = 0;
+
+let label
+
+let timer = 0;
+
+let moguraSpawnTimer = 200;
+
+let moguraTimer = 500;
+
+let spawnCool = 0;
+
+let spawnCount = 0;
+
+let isStartPhase = true;
+
+let isEndPhase = false;
+
+let PhaseTimer = 0;
+
+let PhaseTimerAnim1 = 0;
+
+let s = 59, ms = 99;
+
+function main() {
+
+    label = document.createElement("label")
+
+    document.getElementById("label").innerText = score + 'pt';
+
+    ///モグラが登場する地面の生成
+    for(let i = 0; i < 8; i++) {
+    let row = document.createElement("div");
+        for(let j = 0; j < 4; j++) {
+            let tile = document.createElement("div");
+            tile.className = 'tile hole';
+            tile.onclick = tileClick; 
+            tile.timer = 0;
+            tiles.push(tile);
+            row.appendChild(tile);
+        }
+    field.appendChild(row);
+    }
+    setInterval(draw, 10);
+}
+
+function tileClick(e) {
+    pon.load();
+    pon.play();
+    let succeedHit = false;
+    if(this.className == "tile mogura") {
+        this.className = "tile hitSuc";
+        this.timer = 1;
+        score += 10;
+        succeedHit = true;
+    }
+    if(this.className == "tile mogura-Rare") {
+        this.className = "tile hitSuc-Rare";
+        this.timer = 1;
+        score += 50;
+        succeedHit = true;
+    }
+    if(this.className == "tile mogura-Bad") {
+        this.className = "tile hitSuc-Bad";
+        this.timer = 1;
+        score -= 30;
+        succeedHit = true;
+    }
+
+    document.getElementById("label").innerText = "TIME: 0:" + s + ":" + ms + "0 || SCORE: " + score + "pt";
+    if (succeedHit && moguraSpawnTimer >= 80)
+    {
+        moguraSpawnTimer -= 5
+    }
+    if (succeedHit && moguraTimer >= 150)
+    {
+        moguraTimer -= 50
+    }
+    
+}
+
+function spawnMogura(id, isRepeat = false, delay) {
+    let int = Math.floor(Math.random() * 32);
+    if (!isRepeat) spawnCount++;
+
+    if (spawnCount == 10) {
+        id = 1
+        spawnCount = 0;
+    }
+    if (spawnCount == 2 && score >= 200) {
+        id = 2
+    }
+    if (spawnCount == 9 && score >= 500) {
+        id = 2
+    }
+    if (tiles[int].timer != 0 || delay > 0)
+    {  
+        delay--;
+        spawnMogura(id, true, delay)
+    }
+    else {
+        if (id == 0) {
+            tiles[int].className = "tile moguraReady"
+        }
+        if (id == 1) {
+            tiles[int].className = "tile moguraReady-Rare"
+        }
+        if (id == 2) {
+            tiles[int].className = "tile moguraReady-Bad"
+        }
+        
+    }
+    
+    
+}
+
+function draw() {
+    PhaseTimer++;
+
+    if (isStartPhase) {
+
+        if (PhaseTimer == 200 || PhaseTimer == 300 || PhaseTimer == 400) {
+            startcount.load();
+            startcount.play();
+        }
+        if (PhaseTimer <= 200) {
+            PhaseTimerAnim1++;
+        document.getElementById("label").innerText = "もぐらたたきを開始します.！";
+        if (PhaseTimerAnim1 >= 20)
+        document.getElementById("label").innerText = "もぐらたたきを開始します..！";
+        if (PhaseTimerAnim1 >= 40)
+        document.getElementById("label").innerText = "もぐらたたきを開始します...！";
+        if (PhaseTimerAnim1 >= 60)
+        PhaseTimerAnim1 = 0;
+    return
+        }
+        
+        if (PhaseTimer <= 300) {
+            document.getElementById("label").innerText = "TIME: 1:00:000 || 開始まで 3";
+            return;
+        }
+        
+
+        if (PhaseTimer <= 400) {
+            document.getElementById("label").innerText = "TIME: 1:00:000 || 開始まで 2";
+            return;
+        }
+        
+
+        if (PhaseTimer <= 500) {
+            document.getElementById("label").innerText = "TIME: 1:00:000 || 開始まで 1";
+            return;
+        }
+        document.getElementById("label").innerText = "TIME: 1:00:000 || スタート！";
+        isStartPhase = false;
+        return;
+    }
+    ms--;
+
+    if (ms < 0)
+    {
+        if (s > 0 && s <= 11) {
+            timercount.load();
+            timercount.play();
+        }
+        ms = 99
+        s--;
+    }
+
+    if (PhaseTimer <= 600)
+    {
+        start.play();
+        document.getElementById("label").innerText = "TIME: 0:" + s + ":" + ms + "0 || スタート！";
+        if (ms < 10)
+        document.getElementById("label").innerText = "TIME: 0:" + s + ":0" + ms + "0 || スタート！";
+    }
+    else {
+        document.getElementById("label").innerText = "TIME: 0:" + s + ":" + ms + "0 || SCORE: " + score + "pt";
+        if (ms < 10)
+        document.getElementById("label").innerText = "TIME: 0:" + s + ":0" + ms + "0 || SCORE: " + score + "pt";
+
+        if (s < 10)
+        document.getElementById("label").innerText = "TIME: 0:0" + s + ":" + ms + "0 || SCORE: " + score + "pt";
+    if (s < 10 && ms < 10)
+        document.getElementById("label").innerText = "TIME: 0:0" + s + ":0" + ms + "0 || SCORE: " + score + "pt";
+    }
+
+    if (s < 0 && !isEndPhase) {
+        document.getElementById("label").innerText = "TIME: 終了！！！ || SCORE: " + score + "pt";
+        isEndPhase = true;
+        spawnCool = 0;
+        for (let i = 0; i < 32; i++) {
+            if (tiles[i].className != "tile hole")
+            tiles[i].className = "tile moguraBye"
+            tiles[i].timer = 1;
+        }
+        end.play();
+    }
+
+    if (!isEndPhase) {
+        spawnCool++;
+    }
+    
+    if (isEndPhase)
+    document.getElementById("label").innerText = "TIME: 終了！！！ || SCORE: " + score + "pt";
+
+    
+    if (spawnCool >= moguraSpawnTimer)
+    {
+        spawnCool = 0;
+        spawnMogura(0);
+        if (score >= 30) {
+            spawnMogura(0, false, 10);
+        }
+        if (score >= 200) {
+            spawnMogura(0, false, 20);
+        }
+    }
+    for (let i = 0; i < 32; i++) {
+        
+        if (tiles[i].className != "tile hole") tiles[i].timer++;
+        if (tiles[i].className == "tile mogura" && tiles[i].timer >= moguraTimer)
+        {
+            tiles[i].className = "tile moguraBye"
+            tiles[i].timer = 1;
+        }
+        if (tiles[i].className == "tile mogura-Rare" && tiles[i].timer >= moguraTimer * 0.8)
+        {
+            tiles[i].className = "tile moguraBye-Rare"
+            tiles[i].timer = 1;
+        }
+        if (tiles[i].className == "tile mogura-Bad" && tiles[i].timer >= moguraTimer * 1.5)
+        {
+            tiles[i].className = "tile moguraBye"
+            tiles[i].timer = 1;
+        }
+
+        if (tiles[i].className == "tile moguraReady" && tiles[i].timer >= 5)
+        {
+            tiles[i].className = "tile mogura"
+            tiles[i].timer = 1;
+        }
+        if (tiles[i].className == "tile moguraReady-Rare" && tiles[i].timer >= 5)
+        {
+            tiles[i].className = "tile mogura-Rare"
+            tiles[i].timer = 1;
+            kira.load();
+            kira.play();
+        }
+        if (tiles[i].className == "tile moguraReady-Bad" && tiles[i].timer >= 5)
+        {
+            tiles[i].className = "tile mogura-Bad"
+            tiles[i].timer = 1;
+        }
+
+        if (tiles[i].className == "tile hitSuc" && tiles[i].timer >= 12)
+        {
+            tiles[i].className = "tile hit"
+            tiles[i].timer = 1;
+            pww.load();
+            pww.play();
+        }
+        if (tiles[i].className == "tile hitSuc-Rare" && tiles[i].timer >= 12)
+        {
+            tiles[i].className = "tile hit-Rare"
+            tiles[i].timer = 1;
+            picon.load();
+            picon.play();
+        }
+        if (tiles[i].className == "tile hitSuc-Bad" && tiles[i].timer >= 12)
+        {
+            tiles[i].className = "tile hit-Bad"
+            tiles[i].timer = 1;
+            beep.load();
+            beep.play();
+        }
+
+        if (tiles[i].className == "tile hit" && tiles[i].timer >= 30)
+        {
+            tiles[i].className = "tile moguraBye"
+            tiles[i].timer = 1;
+        }
+        if (tiles[i].className == "tile hit-Rare" && tiles[i].timer >= 30)
+        {
+            tiles[i].className = "tile moguraBye-Rare"
+            tiles[i].timer = 1;
+        }
+        if (tiles[i].className == "tile hit-Bad" && tiles[i].timer >= 30)
+        {
+            tiles[i].className = "tile moguraBye"
+            tiles[i].timer = 1;
+        }
+
+        if (tiles[i].className == "tile moguraBye" && tiles[i].timer >= 10)
+        {
+            tiles[i].className = "tile hole"
+            tiles[i].timer = 0;
+        }
+        if (tiles[i].className == "tile moguraBye-Rare" && tiles[i].timer >= 10)
+        {
+            tiles[i].className = "tile hole"
+            tiles[i].timer = 0;
+        }
+    }
+    console.log("drawEnd");
+
+}
+</script>
+</head>
+<body>
+<div id="field"></div>
+<p id="label">エラー</p>
+<p id="label2">目標！ ブロンズ: 500pt / シルバー: 800pt / ゴールド: 1200pt</p>
+<p id="label2">・ノーマルもぐら: +10pt</p>
+<p id="label2">・ゴールドもぐら: +50pt</p>
+<p id="label3">・スマイルもぐら: -30pt</p>
+<audio id="pon" style="display:none;">
+<source src="sound/button51.mp3" type="audio/mp3">
+<audio id="kira" style="display:none;">
+<source src="sound/kira.mp3" type="audio/mp3">
+<audio id="pww" style="display:none;">
+<source src="sound/pww.mp3" type="audio/mp3">
+<audio id="picon" style="display:none;">
+<source src="sound/picon.mp3" type="audio/mp3">
+<audio id="beep" style="display:none;">
+<source src="sound/beep.mp3" type="audio/mp3">
+<audio id="start" style="display:none;">
+<source src="sound/start.mp3" type="audio/mp3">
+<audio id="end" style="display:none;">
+<source src="sound/end.mp3" type="audio/mp3">
+<audio id="timercount" style="display:none;">
+<source src="sound/timercount.mp3" type="audio/mp3">
+<audio id="startcount" style="display:none;">
+<source src="sound/startcount.mp3" type="audio/mp3">
+</audio>
+</body>
+</html>
