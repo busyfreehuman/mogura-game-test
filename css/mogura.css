@@ -1,0 +1,70 @@
+#label {
+color: red;
+font-size: 36px;
+}
+#label2 {
+color: rgb(0, 0, 0);
+font-size: 24px;
+}
+#label3 {
+color: rgb(255, 0, 0);
+font-size: 24px;
+}
+#field {
+display: flex;
+}
+.tile {
+width: 70px;
+height: 70px;
+background-color: green;
+background-size: contain;
+}
+.hole {
+background-image: url('../images/hole.png');
+}
+.mogura {
+background-image: url('../images/mogura.png');
+}
+.mogura-Rare {
+background-image: url('../images/mogura-rare.png');
+}
+.mogura-Bad {
+background-image: url('../images/mogura-happy.png');
+}
+
+.hit {
+background-image: url('../images/mogura_hit.png');
+}
+.hit-Rare {
+background-image: url('../images/mogura_hit-rare.png');
+}
+.hit-Bad {
+background-image: url('../images/mogura_hit-happy.png');
+}
+
+.hitSuc {
+background-image: url('../images/mogura_hitSuc.png');
+}
+.hitSuc-Rare {
+background-image: url('../images/mogura_hitSuc.png');
+}
+.hitSuc-Rare {
+background-image: url('../images/mogura_hitSuc.png');
+}
+
+.moguraReady {
+background-image: url('../images/moguraReady.png');
+}
+.moguraReady-Rare {
+background-image: url('../images/moguraReady.png');
+}
+.moguraReady-Bad {
+background-image: url('../images/moguraReady.png');
+}
+
+.moguraBye {
+background-image: url('../images/moguraReady.png');
+}
+.moguraBye-Rare {
+background-image: url('../images/moguraReady-rare.png');
+}
